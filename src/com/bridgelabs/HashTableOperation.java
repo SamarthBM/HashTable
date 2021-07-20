@@ -6,17 +6,32 @@
 
 package com.bridgelabs;
 
+import java.util.ArrayList;
+
 public class HashTableOperation<K, V> {
 
 	MyMapNode head;
 	MyMapNode tail;
+	private final int numOfBuckets;
+	ArrayList<MyMapNode<K, V>> myBucketArray;
+
+	public HashTableOperation() {
+		this.numOfBuckets = 10;
+		this.myBucketArray = new ArrayList<>();
+		// Creating empty linked list.
+		for (int i = 0; i < numOfBuckets; i++)
+			this.myBucketArray.add(null);
+	}
 
 	/*
-	 * Purpose: Method to get the word from Linked List.
+	 * Purpose: Method to get the word from Linked List using index number.
 	 * 
 	 * @param word: word returned.
 	 */
 	public V get(K word) {
+		int index = this.getBucketIndex(word);
+		if (this.myBucketArray.get(index) == null)
+			return null;
 		MyMapNode<K, V> myNode = searchNode(word);
 		return (myNode == null) ? null : myNode.getValue();
 	}
@@ -40,14 +55,20 @@ public class HashTableOperation<K, V> {
 	}
 
 	/*
-	 * Purpose: Method to add key and value to hash table.
+	 * Purpose: Method to add key and value to hash table using index number.
 	 * 
 	 * @param key: word to be added.
 	 * 
 	 * @param value: frequency of word.
 	 */
 	public void add(K key, V value) {
-		MyMapNode<K, V> myNode = searchNode(key);
+		int index = this.getBucketIndex(key);
+		MyMapNode<K, V> myNode = this.myBucketArray.get(index);
+		if (myNode == null) {
+			myNode = new MyMapNode<>(key, value);
+			this.myBucketArray.set(index, myNode);
+		}
+		myNode = searchNode(key);
 		if (myNode == null) {
 			myNode = new MyMapNode<>(key, value);
 			this.append(myNode);
@@ -55,7 +76,7 @@ public class HashTableOperation<K, V> {
 			myNode.setValue(value);
 
 	}
-	
+
 	/*
 	 * Purpose: Method to append value to Linked List.
 	 * 
@@ -71,6 +92,17 @@ public class HashTableOperation<K, V> {
 			this.tail.setNext(myNode);
 			this.tail = myNode;
 		}
+	}
+
+	/*
+	 * Purpose: Method to get the index number of key.
+	 * 
+	 * @param word: index to be found.
+	 */
+	public int getBucketIndex(K word) {
+		int hashCode = Math.abs(word.hashCode());
+		int index = hashCode % numOfBuckets;
+		return index;
 	}
 
 	@Override
