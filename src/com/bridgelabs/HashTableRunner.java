@@ -1,7 +1,5 @@
 /****************************************************************
- * Purpose :Ability to implement hashtable using Linked List.
- *          Ability to find frequency of words in a bigger sentence.
- *          Use hashcode to find index of the words.
+ * Purpose :Ability to remove "avoidable" from the paragraph.
  * @author Samarth BM
 
 ***************************************************************/
@@ -31,6 +29,9 @@ public class HashTableRunner {
 				count = count + 1;
 			hashTable.add(word, count);
 		}
+		// Removing word "avoidable"
+		hashTable.remove("avoidable");
+		// Displaying frequency.
 		System.out.println(hashTable);
 
 	}
